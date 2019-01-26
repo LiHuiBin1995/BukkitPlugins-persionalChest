@@ -1,7 +1,10 @@
 package com.sklm.lhb.chestHandler;
 
 import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -147,5 +150,124 @@ public class PersionalChestToken {
 			}
 		}
 		return flag;
+	}
+	
+	/**
+	 * 判断指定位置周围的箱子的所有者是否和要放置的箱子的所有者相同，如果相同可以放置，否则不能放置
+	 * @param player     放置箱子的玩家
+	 * @param location   要放置箱子的位置
+	 * @return
+	 */
+	public boolean checkPositionRoundChestHolder(Player player, Location location) {
+		int x = location.getBlockX();
+		int y = location.getBlockY();
+		int z = location.getBlockZ();
+		World world = location.getWorld();
+		Block leftBlock =  world.getBlockAt(x-1, y, z);
+		Block bottomBlock = world.getBlockAt(x, y, z-1);
+		Block rightBlock = world.getBlockAt(x+1, y, z);
+		Block topBlock = world.getBlockAt(x, y, z+1);
+		PersionalChestToken token = new PersionalChestToken();
+		if(token.checkToken(player, leftBlock) == false) {
+			return false;
+		}else if(token.checkToken(player, bottomBlock) == false) {
+			return false;
+		}else if(token.checkToken(player, rightBlock) == false) {
+			return false;
+		}else if(token.checkToken(player, topBlock) == false) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 检查玩家时候有大箱子的权限
+	 * @param player    玩家
+	 * @param block     箱子
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean hasPermissionOfDoubleChest(Player player, Block block) {
+		Location location = block.getLocation();
+		int x = location.getBlockX();
+		int y = location.getBlockY();
+		int z = location.getBlockZ();
+		World world = location.getWorld();
+		
+		Block leftBlock = world.getBlockAt(x-1, y, z);
+		Block rightBlock = world.getBlockAt(x+1, y, z);
+		Block topBlock = world.getBlockAt(x, y, z+1);
+		Block bottomBlock = world.getBlockAt(x, y, z-1);
+		
+		if(leftBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("world", world.getName());
+			jsonObject.put("holder", player.getName());
+			jsonObject.put("x", leftBlock.getLocation().getBlockX());
+			jsonObject.put("y", leftBlock.getLocation().getBlockY());
+			jsonObject.put("z", leftBlock.getLocation().getBlockZ());
+			//persionalChest
+			if(player.hasMetadata("persionalChest")) {
+				List<MetadataValue> metaList = player.getMetadata("persionalChest");
+				String jsonStr = metaList.get(0).asString();
+				if(!jsonStr.contains(jsonObject.toJSONString())) {
+					return false;
+				}
+			}
+		}
+		
+		if(rightBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("world", world.getName());
+			jsonObject.put("holder", player.getName());
+			jsonObject.put("x", rightBlock.getLocation().getBlockX());
+			jsonObject.put("y", rightBlock.getLocation().getBlockY());
+			jsonObject.put("z", rightBlock.getLocation().getBlockZ());
+			//persionalChest
+			if(player.hasMetadata("persionalChest")) {
+				List<MetadataValue> metaList = player.getMetadata("persionalChest");
+				String jsonStr = metaList.get(0).asString();
+				if(!jsonStr.contains(jsonObject.toJSONString())) {
+					return false;
+				}
+			}
+		}
+		
+		
+		if(topBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("world", world.getName());
+			jsonObject.put("holder", player.getName());
+			jsonObject.put("x", topBlock.getLocation().getBlockX());
+			jsonObject.put("y", topBlock.getLocation().getBlockY());
+			jsonObject.put("z", topBlock.getLocation().getBlockZ());
+			//persionalChest
+			if(player.hasMetadata("persionalChest")) {
+				List<MetadataValue> metaList = player.getMetadata("persionalChest");
+				String jsonStr = metaList.get(0).asString();
+				if(!jsonStr.contains(jsonObject.toJSONString())) {
+					return false;
+				}
+			}
+		}
+		
+		if(bottomBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("world", world.getName());
+			jsonObject.put("holder", player.getName());
+			jsonObject.put("x", bottomBlock.getLocation().getBlockX());
+			jsonObject.put("y", bottomBlock.getLocation().getBlockY());
+			jsonObject.put("z", bottomBlock.getLocation().getBlockZ());
+			//persionalChest
+			if(player.hasMetadata("persionalChest")) {
+				List<MetadataValue> metaList = player.getMetadata("persionalChest");
+				String jsonStr = metaList.get(0).asString();
+				if(!jsonStr.contains(jsonObject.toJSONString())) {
+					return false;
+				}
+			}
+		}
+		return true;
+		
 	}
 }

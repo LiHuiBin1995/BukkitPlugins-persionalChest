@@ -18,10 +18,11 @@ public class ChestActionHandler implements Listener {
 	public void playerPlaceChest(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlockPlaced();
+		PersionalChestToken token = new PersionalChestToken();
 		Location location = event.getBlockReplacedState().getLocation();
-		boolean b = checkPositionRoundChestHolder(player, location);
+		boolean b = token.checkPositionRoundChestHolder(player, location);
 		if(b==true || player.isOp()==true) {
-			new PersionalChestToken().addToken(player, block);	
+			token.addToken(player, block);	
 		}else {
 			player.sendMessage(PersionalChest.languageSection.getString("persionalChest.createDoubleChestError"));
 			event.setBuild(false);
@@ -49,39 +50,16 @@ public class ChestActionHandler implements Listener {
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			PersionalChestToken token = new PersionalChestToken();
 			boolean correct = token.checkToken(player, block);
-			if(!correct && !player.isOp()) {
-				event.setCancelled(true);
-				player.sendMessage(PersionalChest.languageSection.getString("persionalChest.permission"));
+			boolean hasPermission = token.hasPermissionOfDoubleChest(player, block);
+			if((!correct && !player.isOp()) || hasPermission==false) {
+				if(!player.isOp()) {
+					event.setCancelled(true);
+					player.sendMessage(PersionalChest.languageSection.getString("persionalChest.permission"));
+				}
 			}
 		}
 	}
 	
-	/**
-	 * 判断指定位置周围的箱子的所有者是否和要放置的箱子的所有者相同，如果相同可以放置，否则不能放置
-	 * @param player     放置箱子的玩家
-	 * @param location   要放置箱子的位置
-	 * @return
-	 */
-	public boolean checkPositionRoundChestHolder(Player player, Location location) {
-		int x = location.getBlockX();
-		int y = location.getBlockY();
-		int z = location.getBlockZ();
-		World world = location.getWorld();
-		Block leftBlock =  world.getBlockAt(x-1, y, z);
-		Block bottomBlock = world.getBlockAt(x, y, z-1);
-		Block rightBlock = world.getBlockAt(x+1, y, z);
-		Block topBlock = world.getBlockAt(x, y, z+1);
-		PersionalChestToken token = new PersionalChestToken();
-		if(token.checkToken(player, leftBlock) == false) {
-			return false;
-		}else if(token.checkToken(player, bottomBlock) == false) {
-			return false;
-		}else if(token.checkToken(player, rightBlock) == false) {
-			return false;
-		}else if(token.checkToken(player, topBlock) == false) {
-			return false;
-		}
-		return true;
-	}
+	
 	
 }
