@@ -1,0 +1,5 @@
+name: persionalChest
+main: com.sklm.lhb.persionalChest.PersionalChest
+version: 0.0.1
+commands: 
+  sk_chest: 

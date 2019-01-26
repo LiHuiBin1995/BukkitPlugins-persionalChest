@@ -1,0 +1,10 @@
+root: 
+  reload: 
+    pre_reload: '§a§l 正在重载'
+    success: '§a§l 重载成功'
+    error: '§c§l 重载失败'
+  persionalChest: 
+    permission: '§c§l 你没有该箱子的权限'
+    title: '§a§l私人仓库'
+    hasItem: '§c§l箱子中有物品，不能破坏'
+    createDoubleChestError: '§c§l你没有权限合并箱子'
