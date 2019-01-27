@@ -24,7 +24,13 @@ public class PersionalChestAPI {
 	 */
 	public static boolean isTokenPass(Player player, Block block) {
 		PersionalChestToken token = new PersionalChestToken();
-		return token.checkToken(player, block);
+		boolean flag = false;
+		try {
+			flag = token.checkToken(player, block);
+		} catch (Exception e) {
+		   e.printStackTrace();
+		}
+		return flag;
 	}
 	
 	/**
@@ -34,7 +40,11 @@ public class PersionalChestAPI {
 	 */
 	public static void addToken(Player player, Block block) {
 		PersionalChestToken token = new PersionalChestToken();
-		token.addToken(player, block);
+		try {
+			token.addToken(player, block);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

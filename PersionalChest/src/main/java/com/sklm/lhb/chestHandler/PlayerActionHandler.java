@@ -17,7 +17,7 @@ public class PlayerActionHandler implements Listener {
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		JSONArray jsonArray = JsonFileUtil.readJsonToArray(PersionalChest.getPath()+"player\\", player.getName());
+		JSONArray jsonArray = JsonFileUtil.readJsonToArray(PersionalChest.getPath()+"player\\", player.getName(),PersionalChest.CHARACTERSET);
 		if(jsonArray != null) {
 			player.setMetadata("persionalChest", new FixedMetadataValue(PersionalChest.instance, jsonArray.toJSONString()));
 		}
@@ -28,7 +28,7 @@ public class PlayerActionHandler implements Listener {
 		Player player = event.getPlayer();
 		List<MetadataValue> metaList = player.getMetadata("persionalChest");
 		if(metaList.size() == 1) {
-			JsonFileUtil.createJsonFile(metaList.get(0).asString(), PersionalChest.getPath()+"player\\", player.getName());
+			JsonFileUtil.createJsonFile(metaList.get(0).asString(), PersionalChest.getPath()+"player\\", player.getName(),PersionalChest.CHARACTERSET);
 		}	
 	}
 	

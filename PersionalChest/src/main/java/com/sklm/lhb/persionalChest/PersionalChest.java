@@ -21,6 +21,7 @@ public class PersionalChest extends JavaPlugin {
 	private static final String PATH = System.getProperty("user.dir")+"\\plugins\\persionalChest\\";
 	public static PersionalChest instance = null;
 	public static ConfigurationSection languageSection = null;
+	public static final String CHARACTERSET = "Unicode";
 	
 	@Override
 	public void onEnable() {
@@ -43,7 +44,7 @@ public class PersionalChest extends JavaPlugin {
 		for (Player player : onlinePlayer) {
 			List<MetadataValue> metaList = player.getMetadata("persionalChest");
 			if(metaList.size() == 1) {
-				JsonFileUtil.createJsonFile(metaList.get(0).asString(), PersionalChest.getPath()+"player\\", player.getName());
+				JsonFileUtil.createJsonFile(metaList.get(0).asString(), PersionalChest.getPath()+"player\\", player.getName(),PersionalChest.CHARACTERSET);
 			}
 		}
 	}

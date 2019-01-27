@@ -26,7 +26,7 @@ public class PersionalChestToken {
 	 * @param block     要添加的口令的方块
 	 */
 	@SuppressWarnings("unchecked")
-	public void addToken(Player player, Block block) {
+	public void addToken(Player player, Block block) throws Exception {
 		if(block.getState().getType()==Material.CHEST) {
 			List<MetadataValue> metaList = player.getMetadata("persionalChest");
 			String persionalChestMsg = null;
@@ -36,8 +36,10 @@ public class PersionalChestToken {
 				try {		
 					JSONArray jsonArray = (JSONArray) parse.parse(persionalChestMsg);
 					JSONObject jsonObject = new JSONObject();
-					jsonObject.put("holder", player.getName());
-					jsonObject.put("world", block.getLocation().getWorld().getName());
+					String holder = new String(player.getName().getBytes(PersionalChest.CHARACTERSET), PersionalChest.CHARACTERSET);
+					String world = new String(block.getLocation().getWorld().getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+					jsonObject.put("holder", holder);
+					jsonObject.put("world", world);
 					jsonObject.put("x", block.getLocation().getBlockX());
 					jsonObject.put("y", block.getLocation().getBlockY());
 					jsonObject.put("z", block.getLocation().getBlockZ());
@@ -50,8 +52,10 @@ public class PersionalChestToken {
 			}else if(metaList.size() == 0) {
 				JSONArray jsonArray = new JSONArray();
 				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("holder", player.getName());
-				jsonObject.put("world", block.getLocation().getWorld().getName());
+				String holder = new String(player.getName().getBytes(PersionalChest.CHARACTERSET), PersionalChest.CHARACTERSET);
+				String world = new String(block.getLocation().getWorld().getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+				jsonObject.put("holder", holder);
+				jsonObject.put("world", world);
 				jsonObject.put("x", block.getLocation().getBlockX());
 				jsonObject.put("y", block.getLocation().getBlockY());
 				jsonObject.put("z", block.getLocation().getBlockZ());
@@ -70,7 +74,7 @@ public class PersionalChestToken {
 	 * @return 如果口令移除成功返回true,否则返回false
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean removeToken(Player player, Block block) {
+	public boolean removeToken(Player player, Block block) throws Exception {
 		boolean flag = true;
 		if(block.getState().getType() == Material.CHEST) {
 			Chest persionalChest = (Chest) block.getState();
@@ -86,8 +90,10 @@ public class PersionalChestToken {
 				try {
 					JSONArray jsonArray = (JSONArray) parse.parse(metaList.get(0).asString());
 					JSONObject blockJson = new JSONObject();
-					blockJson.put("holder", player.getName());
-					blockJson.put("world", block.getLocation().getWorld().getName());
+					String holder = new String(player.getName().getBytes(PersionalChest.CHARACTERSET), PersionalChest.CHARACTERSET);
+					String world = new String(block.getLocation().getWorld().getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+					blockJson.put("holder", holder);
+					blockJson.put("world", world);
 					blockJson.put("x", block.getLocation().getBlockX());
 					blockJson.put("y", block.getLocation().getBlockY());
 					blockJson.put("z", block.getLocation().getBlockZ());
@@ -124,7 +130,7 @@ public class PersionalChestToken {
 	 * @return  如果口令正确返回true,否则返回false
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean checkToken(Player player, Block block) {
+	public boolean checkToken(Player player, Block block) throws Exception {
 		boolean flag = true;
 		if(block.getState().getType() == Material.CHEST) {
 			List<MetadataValue> metaList = player.getMetadata("persionalChest");
@@ -133,8 +139,10 @@ public class PersionalChestToken {
 				try {
 					JSONArray jsonArray = (JSONArray) parse.parse(metaList.get(0).asString());
 					JSONObject blockJson = new JSONObject();
-					blockJson.put("holder", player.getName());
-					blockJson.put("world", block.getLocation().getWorld().getName());
+					String holder = new String(player.getName().getBytes(PersionalChest.CHARACTERSET), PersionalChest.CHARACTERSET);
+					String world = new String(block.getLocation().getWorld().getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+					blockJson.put("holder", holder);
+					blockJson.put("world", world);
 					blockJson.put("x", block.getLocation().getBlockX());
 					blockJson.put("y", block.getLocation().getBlockY());
 					blockJson.put("z", block.getLocation().getBlockZ());
@@ -168,15 +176,20 @@ public class PersionalChestToken {
 		Block rightBlock = world.getBlockAt(x+1, y, z);
 		Block topBlock = world.getBlockAt(x, y, z+1);
 		PersionalChestToken token = new PersionalChestToken();
-		if(token.checkToken(player, leftBlock) == false) {
-			return false;
-		}else if(token.checkToken(player, bottomBlock) == false) {
-			return false;
-		}else if(token.checkToken(player, rightBlock) == false) {
-			return false;
-		}else if(token.checkToken(player, topBlock) == false) {
-			return false;
+		try {
+			if(token.checkToken(player, leftBlock) == false) {
+				return false;
+			}else if(token.checkToken(player, bottomBlock) == false) {
+				return false;
+			}else if(token.checkToken(player, rightBlock) == false) {
+				return false;
+			}else if(token.checkToken(player, topBlock) == false) {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		return true;
 	}
 	
@@ -187,7 +200,7 @@ public class PersionalChestToken {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean hasPermissionOfDoubleChest(Player player, Block block) {
+	public boolean hasPermissionOfDoubleChest(Player player, Block block) throws Exception{
 		Location location = block.getLocation();
 		int x = location.getBlockX();
 		int y = location.getBlockY();
@@ -201,8 +214,10 @@ public class PersionalChestToken {
 		
 		if(leftBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("world", world.getName());
-			jsonObject.put("holder", player.getName());
+			String worldName = new String(world.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			String playerName = new String(player.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			jsonObject.put("world", worldName);
+			jsonObject.put("holder", playerName);
 			jsonObject.put("x", leftBlock.getLocation().getBlockX());
 			jsonObject.put("y", leftBlock.getLocation().getBlockY());
 			jsonObject.put("z", leftBlock.getLocation().getBlockZ());
@@ -218,8 +233,10 @@ public class PersionalChestToken {
 		
 		if(rightBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("world", world.getName());
-			jsonObject.put("holder", player.getName());
+			String worldName = new String(world.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			String playerName = new String(player.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			jsonObject.put("world", worldName);
+			jsonObject.put("holder", playerName);
 			jsonObject.put("x", rightBlock.getLocation().getBlockX());
 			jsonObject.put("y", rightBlock.getLocation().getBlockY());
 			jsonObject.put("z", rightBlock.getLocation().getBlockZ());
@@ -236,8 +253,10 @@ public class PersionalChestToken {
 		
 		if(topBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("world", world.getName());
-			jsonObject.put("holder", player.getName());
+			String worldName = new String(world.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			String playerName = new String(player.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			jsonObject.put("world", worldName);
+			jsonObject.put("holder", playerName);
 			jsonObject.put("x", topBlock.getLocation().getBlockX());
 			jsonObject.put("y", topBlock.getLocation().getBlockY());
 			jsonObject.put("z", topBlock.getLocation().getBlockZ());
@@ -253,8 +272,10 @@ public class PersionalChestToken {
 		
 		if(bottomBlock.getState().getData().toItemStack().getType()==Material.CHEST) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("world", world.getName());
-			jsonObject.put("holder", player.getName());
+			String worldName = new String(world.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			String playerName = new String(player.getName().getBytes(PersionalChest.CHARACTERSET),PersionalChest.CHARACTERSET);
+			jsonObject.put("world", worldName);
+			jsonObject.put("holder", playerName);
 			jsonObject.put("x", bottomBlock.getLocation().getBlockX());
 			jsonObject.put("y", bottomBlock.getLocation().getBlockY());
 			jsonObject.put("z", bottomBlock.getLocation().getBlockZ());

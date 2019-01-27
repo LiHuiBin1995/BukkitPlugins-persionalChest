@@ -22,7 +22,12 @@ public class ChestActionHandler implements Listener {
 		Location location = event.getBlockReplacedState().getLocation();
 		boolean b = token.checkPositionRoundChestHolder(player, location);
 		if(b==true || player.isOp()==true) {
-			token.addToken(player, block);	
+			try {
+				token.addToken(player, block);	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}else {
 			player.sendMessage(PersionalChest.languageSection.getString("persionalChest.createDoubleChestError"));
 			event.setBuild(false);
@@ -31,15 +36,22 @@ public class ChestActionHandler implements Listener {
 		
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void playerBreakChest(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 		PersionalChestToken token = new PersionalChestToken();
-		boolean correct = token.removeToken(player, block);
-		if(!correct && !player.isOp()) {
-			event.setCancelled(true);
-			player.sendMessage(PersionalChest.languageSection.getString("persionalChest.permission"));
+		try {
+			boolean correct = token.removeToken(player, block);
+			if(correct==false) {
+				if(!player.isOp()) {
+					player.sendMessage(PersionalChest.languageSection.getString("persionalChest.permission"));
+					event.setCancelled(true);
+					return ;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -48,15 +60,20 @@ public class ChestActionHandler implements Listener {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			PersionalChestToken token = new PersionalChestToken();
-			boolean correct = token.checkToken(player, block);
-			boolean hasPermission = token.hasPermissionOfDoubleChest(player, block);
-			if((!correct && !player.isOp()) || hasPermission==false) {
-				if(!player.isOp()) {
-					event.setCancelled(true);
-					player.sendMessage(PersionalChest.languageSection.getString("persionalChest.permission"));
+			try {
+				PersionalChestToken token = new PersionalChestToken();
+				boolean correct = token.checkToken(player, block);
+				boolean hasPermission = token.hasPermissionOfDoubleChest(player, block);
+				if((!correct && !player.isOp()) || hasPermission==false) {
+					if(!player.isOp()) {	
+						player.sendMessage(PersionalChest.languageSection.getString("persionalChest.permission"));
+						event.setCancelled(true);
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+			
 		}
 	}
 	
